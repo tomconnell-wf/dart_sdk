@@ -182,7 +182,7 @@ footer .sdk-version {
 
 .nav-panel {
   background-color: #12202f;
-  flex: 1 200px;
+  flex: 1 300px;
   margin: 0;
   overflow: scroll;
   user-select: none;
@@ -442,7 +442,7 @@ footer .sdk-version {
 }
 
 .info-panel {
-  flex: 1 200px;
+  flex: 1 350px;
   margin: 0;
   height: 100%;
   display: flex;
