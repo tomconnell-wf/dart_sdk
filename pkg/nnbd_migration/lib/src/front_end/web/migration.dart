@@ -107,6 +107,21 @@ void main() {
       updatePage('&nbsp;', null);
     }
   });
+
+  document.onKeyUp.listen((event) {
+    if (event.keyCode == KeyCode.ONE) {
+      window.console.log('one action hotkey');
+      document.querySelector('.cast-away-null-hint')?.click();
+    }
+    if (event.keyCode == KeyCode.TWO) {
+      window.console.log('two action hotkey');
+      document.querySelector('.nullable-hint')?.click();
+    }
+    if (event.keyCode == KeyCode.THREE) {
+      window.console.log('three action hotkey');
+      document.querySelector('.add-late-hint')?.click();
+    }
+  });
 }
 
 /// Returns the "authToken" query parameter value of the current location.
@@ -1041,11 +1056,25 @@ void _populateEditLinks(EditDetails response, Element? editPanel) {
   Element editParagraph = document.createElement('p');
   editPanel.append(editParagraph);
   for (var edit in response.edits!) {
+    var hotkeyClass = '';
+
+    switch (edit.description!) {
+      case 'Add /*!*/ hint':
+        hotkeyClass = 'cast-away-null-hint';
+        break;
+      case 'Add /*?*/ hint':
+        hotkeyClass = 'nullable-hint';
+        break;
+      case 'Add late hint':
+        hotkeyClass = 'add-late-hint';
+        break;
+    }
+
     Element a = document.createElement('a');
     editParagraph.append(a);
     a.append(Text(edit.description!));
     a.setAttribute('href', edit.href!);
-    a.classes = ['add-hint-link', 'before-apply', 'button'];
+    a.classes = ['add-hint-link', 'before-apply', 'button', hotkeyClass];
   }
 }
 
