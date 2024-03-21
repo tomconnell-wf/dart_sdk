@@ -10,7 +10,7 @@ environment:
 dependencies:
   _fe_analyzer_shared: any
   analyzer_plugin: any
-  analyzer: any
+  analyzer: 5.3.1
   args: any
   cli_util: any
   collection: any
@@ -23,7 +23,7 @@ dependencies:
 
 # Use 'any' constraints here; we get our versions from the DEPS file.
 dev_dependencies:
-  analyzer_utilities: any
+#  analyzer_utilities: any
   http: any
   lints: any
   test_reflective_loader: any
