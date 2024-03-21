@@ -108,6 +108,10 @@ void main() {
     }
   });
 
+  registerKeyboardShortcuts();
+}
+
+void registerKeyboardShortcuts() {
   document.onKeyUp.listen((event) {
     if (event.keyCode == KeyCode.ONE) {
       window.console.log('one action hotkey');
