@@ -24,6 +24,9 @@ import 'highlight_js.dart';
 List<EditListItem> _currentEdits = [];
 int _currentEditIdx = -1;
 
+List<NavigationTreeFileNode> _files = [];
+int _currentFileIdx = -1;
+
 void main() {
   document.addEventListener('DOMContentLoaded', (event) {
     var path = window.location.pathname;
@@ -134,23 +137,41 @@ void registerKeyboardShortcuts() {
     if (event.keyCode == KeyCode.S) {
       _handleNextEditHotkey();
     }
-  });
+    if (event.keyCode == KeyCode.A) {
+      _handlePrevFileHotkey();
+    }
+    if (event.keyCode == KeyCode.D) {
+      _handleNextFileHotkey();
+    }
+    if (event.keyCode == KeyCode.SPACE) {
+      var currentFile = _files[_currentFileIdx];
+      document.querySelectorAll('.status-icon').firstWhere((element) => element.dataset['name'] == currentFile.path).click();
+    }
+    });
 }
 
-void _handleNextEditHotkey() {
-  window.console.log('next action hotkey $_currentEditIdx');
+void _handlePrevFileHotkey() {
+  window.console.log('prev file hotkey $_currentFileIdx');
 
-  if (_currentEdits.isEmpty) {
-    return;
+  _currentFileIdx--;
+  if (_currentFileIdx < 0) {
+    _currentFileIdx = _files.length - 1;
   }
 
-  _currentEditIdx++;
-  if (_currentEditIdx >= _currentEdits.length) {
-    _currentEditIdx = 0;
+  var prevFile = _files[_currentFileIdx];
+  document.querySelectorAll('.nav-link').firstWhere((element) => element.dataset['name'] == prevFile.path).click();
+}
+
+void _handleNextFileHotkey() {
+  window.console.log('next file hotkey $_currentFileIdx');
+
+  _currentFileIdx++;
+  if (_currentFileIdx >= _files.length) {
+    _currentFileIdx = 0;
   }
 
-  var nextEdit = _currentEdits[_currentEditIdx];
-  document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == nextEdit.offset.toString() && element.dataset['line'] == nextEdit.line.toString()).click();
+  var nextFile = _files[_currentFileIdx];
+  document.querySelectorAll('.nav-link').firstWhere((element) => element.dataset['name'] == nextFile.path).click();
 }
 
 void _handlePreviousEditHotkey() {
@@ -167,6 +188,22 @@ void _handlePreviousEditHotkey() {
 
   var prevEdit = _currentEdits[_currentEditIdx];
   document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == prevEdit.offset.toString() && element.dataset['line'] == prevEdit.line.toString()).click();
+}
+
+void _handleNextEditHotkey() {
+  window.console.log('next action hotkey $_currentEditIdx');
+
+  if (_currentEdits.isEmpty) {
+    return;
+  }
+
+  _currentEditIdx++;
+  if (_currentEditIdx >= _currentEdits.length) {
+    _currentEditIdx = 0;
+  }
+
+  var nextEdit = _currentEdits[_currentEditIdx];
+  document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == nextEdit.offset.toString() && element.dataset['line'] == nextEdit.line.toString()).click();
 }
 
 /// Returns the "authToken" query parameter value of the current location.
@@ -565,6 +602,9 @@ Future<void> loadFile(
 /// Load the navigation tree into the ".nav-tree" div.
 void loadNavigationTree() async {
   var path = '/_preview/navigationTree.json';
+
+  _files = [];
+  _currentFileIdx = -1;
 
   // Request the navigation tree, then do work with the response.
   try {
@@ -1028,8 +1068,11 @@ void writeNavigationSubtree(
           startsCollapsed:
               entity.migrationStatus == UnitMigrationStatus.alreadyMigrated);
     } else if (entity is NavigationTreeFileNode) {
+      _files.add(entity);
+
       if (enablePartialMigration) {
         var statusIcon = createIcon()..classes.add('status-icon');
+        statusIcon.dataset['name'] = entity.path!;
         if (!entity.migrationStatusCanBeChanged!) {
           statusIcon.classes.add('disabled');
         }
