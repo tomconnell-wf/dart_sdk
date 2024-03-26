@@ -63,6 +63,7 @@ void main() {
     final rerunMigrationButton = document.querySelector('.rerun-migration')!;
     rerunMigrationButton.onClick.listen((event) async {
       try {
+        window.localStorage['oldTree'] = jsonEncode(NavigationTreeNode.listToJson(navigationTree!));
         document.body!.classes.add('rerunning');
         var response = await doPost('/rerun-migration');
         if (response!['success'] as bool) {
@@ -629,8 +630,14 @@ void loadNavigationTree() async {
     final response = (await doGet<List<Object?>>(path))!;
     var navTree = document.querySelector('.nav-tree')!;
     navTree.innerHtml = '';
+
+    List<NavigationTreeNode>? oldTree;
+    if (window.localStorage['oldTree'] != null) {
+      oldTree = NavigationTreeNode.listFromJson(jsonDecode(window.localStorage['oldTree'] as String) as List<Object?>);
+    }
     navigationTree = NavigationTreeNode.listFromJson(response);
-    writeNavigationSubtree(navTree, navigationTree!,
+
+    writeNavigationSubtree(navTree, navigationTree!, oldTree,
         enablePartialMigration: true);
   } catch (e, st) {
     handleError("couldn't load navigation tree", e, st);
@@ -1051,7 +1058,7 @@ void writeCodeAndRegions(String path, FileDetails data, bool clearEditDetails) {
 }
 
 void writeNavigationSubtree(
-    Element parentElement, List<NavigationTreeNode> tree,
+    Element parentElement, List<NavigationTreeNode> tree, List<NavigationTreeNode>? oldTree,
     {bool enablePartialMigration = false}) {
   Element ul = document.createElement('ul');
   parentElement.append(ul);
@@ -1068,7 +1075,8 @@ void writeNavigationSubtree(
       var folderIcon = createIcon('folder_open');
       li.append(folderIcon);
       li.append(Text(entity.name!));
-      writeNavigationSubtree(li, entity.subtree!,
+
+      writeNavigationSubtree(li, entity.subtree!, (oldTree?.firstWhere((element) => element.path == entity.path) as NavigationTreeDirectoryNode?)?.subtree,
           enablePartialMigration: enablePartialMigration);
       if (enablePartialMigration) {
         var statusIcon = createIcon('indeterminate_check_box')
@@ -1086,6 +1094,12 @@ void writeNavigationSubtree(
           startsCollapsed:
               entity.migrationStatus == UnitMigrationStatus.alreadyMigrated);
     } else if (entity is NavigationTreeFileNode) {
+
+      var oldEntity = oldTree?.firstWhere((element) => element.path == entity.path);
+      if (oldEntity != null) {
+        entity.migrationStatus = oldEntity.migrationStatus;
+      }
+
       _files.add(entity);
 
       if (enablePartialMigration) {
