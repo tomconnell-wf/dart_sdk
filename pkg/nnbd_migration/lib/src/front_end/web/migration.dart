@@ -1125,7 +1125,10 @@ void writeNavigationSubtree(
       a.dataset['name'] = entity.path!;
       a.setAttribute('href', pathWithQueryParameters(entity.href!, {}));
       a.append(Text(entity.name!));
-      a.onClick.listen((MouseEvent event) => handleNavLinkClick(event, true));
+      a.onClick.listen((MouseEvent event) {
+        _currentFileIdx = _files.indexOf(entity);
+        return handleNavLinkClick(event, true);
+      });
       var editCount = entity.editCount!;
       if (editCount > 0) {
         Element editsBadge = document.createElement('span');
