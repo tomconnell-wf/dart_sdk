@@ -788,7 +788,6 @@ void populateProposedEdits(
 
   var editCount = edits.length;
   _currentEdits = [];
-  _currentEditIdx = -1;
 
   if (editCount < 2) {
     editListHeading!.innerText = 'Proposed Edits';
@@ -843,6 +842,7 @@ void populateProposedEdits(
   _currentEdits.sort((a, b) => a.line!.compareTo(b.line!));
 
   if (clearEditDetails) {
+    _currentEditIdx = -1;
     populateEditDetails();
   }
 }
