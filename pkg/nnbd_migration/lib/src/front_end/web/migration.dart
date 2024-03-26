@@ -623,7 +623,6 @@ void loadNavigationTree() async {
   var path = '/_preview/navigationTree.json';
 
   _files = [];
-  _currentFileIdx = -1;
 
   // Request the navigation tree, then do work with the response.
   try {
