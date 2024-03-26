@@ -145,9 +145,12 @@ void registerKeyboardShortcuts() {
     }
     if (event.keyCode == KeyCode.SPACE) {
       var currentFile = _files[_currentFileIdx];
-      document.querySelectorAll('.status-icon').firstWhere((element) => element.dataset['name'] == currentFile.path).click();
+      document
+          .querySelectorAll('.status-icon')
+          .firstWhere((element) => element.dataset['name'] == currentFile.path)
+          .click();
     }
-    });
+  });
 }
 
 void _handlePrevFileHotkey() {
@@ -159,7 +162,10 @@ void _handlePrevFileHotkey() {
   }
 
   var prevFile = _files[_currentFileIdx];
-  document.querySelectorAll('.nav-link').firstWhere((element) => element.dataset['name'] == prevFile.path).click();
+  document
+      .querySelectorAll('.nav-link')
+      .firstWhere((element) => element.dataset['name'] == prevFile.path)
+      .click();
 }
 
 void _handleNextFileHotkey() {
@@ -171,7 +177,10 @@ void _handleNextFileHotkey() {
   }
 
   var nextFile = _files[_currentFileIdx];
-  document.querySelectorAll('.nav-link').firstWhere((element) => element.dataset['name'] == nextFile.path).click();
+  document
+      .querySelectorAll('.nav-link')
+      .firstWhere((element) => element.dataset['name'] == nextFile.path)
+      .click();
 }
 
 void _handlePreviousEditHotkey() {
@@ -187,7 +196,12 @@ void _handlePreviousEditHotkey() {
   }
 
   var prevEdit = _currentEdits[_currentEditIdx];
-  document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == prevEdit.offset.toString() && element.dataset['line'] == prevEdit.line.toString()).click();
+  document
+      .querySelectorAll('.edit-link')
+      .firstWhere((element) =>
+          element.dataset['offset'] == prevEdit.offset.toString() &&
+          element.dataset['line'] == prevEdit.line.toString())
+      .click();
 }
 
 void _handleNextEditHotkey() {
@@ -203,7 +217,12 @@ void _handleNextEditHotkey() {
   }
 
   var nextEdit = _currentEdits[_currentEditIdx];
-  document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == nextEdit.offset.toString() && element.dataset['line'] == nextEdit.line.toString()).click();
+  document
+      .querySelectorAll('.edit-link')
+      .firstWhere((element) =>
+          element.dataset['offset'] == nextEdit.offset.toString() &&
+          element.dataset['line'] == nextEdit.line.toString())
+      .click();
 }
 
 /// Returns the "authToken" query parameter value of the current location.
