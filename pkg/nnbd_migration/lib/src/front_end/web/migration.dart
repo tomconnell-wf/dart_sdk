@@ -21,6 +21,9 @@ import 'highlight_js.dart';
 
 // TODO(devoncarew): Include a favicon.
 
+List<EditListItem> _currentEdits = [];
+int _currentEditIdx = -1;
+
 void main() {
   document.addEventListener('DOMContentLoaded', (event) {
     var path = window.location.pathname;
@@ -125,7 +128,45 @@ void registerKeyboardShortcuts() {
       window.console.log('three action hotkey');
       document.querySelector('.add-late-hint')?.click();
     }
+    if (event.keyCode == KeyCode.W) {
+      _handlePreviousEditHotkey();
+    }
+    if (event.keyCode == KeyCode.S) {
+      _handleNextEditHotkey();
+    }
   });
+}
+
+void _handleNextEditHotkey() {
+  window.console.log('next action hotkey $_currentEditIdx');
+
+  if (_currentEdits.isEmpty) {
+    return;
+  }
+
+  _currentEditIdx++;
+  if (_currentEditIdx >= _currentEdits.length) {
+    _currentEditIdx = 0;
+  }
+
+  var nextEdit = _currentEdits[_currentEditIdx];
+  document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == nextEdit.offset.toString() && element.dataset['line'] == nextEdit.line.toString()).click();
+}
+
+void _handlePreviousEditHotkey() {
+  window.console.log('prev action hotkey $_currentEditIdx');
+
+  if (_currentEdits.isEmpty) {
+    return;
+  }
+
+  _currentEditIdx--;
+  if (_currentEditIdx < 0) {
+    _currentEditIdx = _currentEdits.length - 1;
+  }
+
+  var prevEdit = _currentEdits[_currentEditIdx];
+  document.querySelectorAll('.edit-link').firstWhere((element) => element.dataset['offset'] == prevEdit.offset.toString() && element.dataset['line'] == prevEdit.line.toString()).click();
 }
 
 /// Returns the "authToken" query parameter value of the current location.
@@ -378,6 +419,8 @@ int? getOffset(String location) {
 
 void handleAddHintLinkClick(MouseEvent event) async {
   var path = (event.currentTarget as Element).getAttribute('href')!;
+
+  window.console.log('link click');
 
   // Don't navigate on link click.
   event.preventDefault();
@@ -679,6 +722,8 @@ void populateProposedEdits(
   editListElement!.innerHtml = '';
 
   var editCount = edits.length;
+  _currentEdits = [];
+  _currentEditIdx = -1;
 
   if (editCount < 2) {
     editListHeading!.innerText = 'Proposed Edits';
@@ -700,6 +745,7 @@ void populateProposedEdits(
       Element list = document.createElement('ul');
       editListElement!.append(list);
       for (var edit in entry.value) {
+        _currentEdits.add(edit);
         Element item = document.createElement('li');
         list.append(item);
         item.classes.add('edit');
@@ -728,6 +774,8 @@ void populateProposedEdits(
       }
     }
   }
+
+  _currentEdits.sort((a, b) => a.line!.compareTo(b.line!));
 
   if (clearEditDetails) {
     populateEditDetails();
