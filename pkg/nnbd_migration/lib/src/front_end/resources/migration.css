@@ -442,7 +442,7 @@ footer .sdk-version {
 }
 
 .info-panel {
-  flex: 1 350px;
+  flex: 1 550px;
   margin: 0;
   height: 100%;
   display: flex;
@@ -490,7 +490,7 @@ footer .sdk-version {
 
 .edit-panel {
   margin-top: 6px;
-  flex: 1 100px;
+  flex: 1 400px;
 }
 
 .edit-list {
