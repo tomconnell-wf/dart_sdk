@@ -120,24 +120,40 @@ void main() {
 
 void registerKeyboardShortcuts() {
   document.onKeyUp.listen((event) {
-    if (event.keyCode == KeyCode.ONE) {
-      window.console.log('one action hotkey');
-      document.querySelector('.cast-away-null-hint')?.click();
+    // Hint hotkeys
+    if (event.keyCode == KeyCode.U) {
+      _handleCastAwayNullHintHotkey();
     }
-    if (event.keyCode == KeyCode.TWO) {
-      window.console.log('two action hotkey');
-      document.querySelector('.nullable-hint')?.click();
+    if (event.keyCode == KeyCode.I) {
+      _handleNullableHintHotkey();
     }
-    if (event.keyCode == KeyCode.THREE) {
-      window.console.log('three action hotkey');
-      document.querySelector('.add-late-hint')?.click();
+    if (event.keyCode == KeyCode.O) {
+      _handleLateHintHotkey();
     }
+
+    // Hint + next hotkeys
+    if (event.keyCode == KeyCode.J) {
+      _handleCastAwayNullHintHotkey();
+      // _handleNextEditHotkey(); - Timing issue, this doesn't work.
+    }
+    if (event.keyCode == KeyCode.K) {
+      _handleNullableHintHotkey();
+      // _handleNextEditHotkey(); - Timing issue, this doesn't work.
+    }
+    if (event.keyCode == KeyCode.L) {
+      _handleLateHintHotkey();
+      // _handleNextEditHotkey(); - Timing issue, this doesn't work.
+    }
+
+    // Edit nav hotkeys
     if (event.keyCode == KeyCode.W) {
       _handlePreviousEditHotkey();
     }
     if (event.keyCode == KeyCode.S) {
       _handleNextEditHotkey();
     }
+
+    // File nav hotkeys
     if (event.keyCode == KeyCode.A) {
       _handlePrevFileHotkey();
     }
@@ -151,7 +167,27 @@ void registerKeyboardShortcuts() {
           .firstWhere((element) => element.dataset['name'] == currentFile.path)
           .click();
     }
+
+    // app hotkeys
+    if (event.keyCode == KeyCode.R) {
+      document.querySelector('.rerun-migration')!.click();
+    }
   });
+}
+
+void _handleCastAwayNullHintHotkey() {
+  window.console.log('one action hotkey');
+  document.querySelector('.cast-away-null-hint')?.click();
+}
+
+void _handleNullableHintHotkey() {
+  window.console.log('two action hotkey');
+  document.querySelector('.nullable-hint')?.click();
+}
+
+void _handleLateHintHotkey() {
+  window.console.log('three action hotkey');
+  document.querySelector('.add-late-hint')?.click();
 }
 
 void _handlePrevFileHotkey() {
